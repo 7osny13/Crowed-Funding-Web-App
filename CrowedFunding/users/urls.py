@@ -24,4 +24,7 @@ from .views import *
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('reg/',Registeration),
+    path('login',LoginView.as_view(), name='login'),
+    path('logino',logino),
+    path('activate/<uidb64>/<token>/',VerificationLink.as_view() ,name='activate'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

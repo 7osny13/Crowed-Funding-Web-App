@@ -5,12 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .errorlist{
+            color: red;
+            list-style: none;
+            padding:10px;
+            margin:50;
+            background-color: #f2dede;
+            border-radius: 2px;
+            text-align: center;
+
+        }
+    </style>
 </head>
 <body>
     <form action="" method="post" enctype="multipart/form-data">
         {%csrf_token%}
         {{form.as_p}}
-        <input type="submit" name="submit">insertimg</input>
+        {% if message %}
+        <p class="message">{{ message }}</p>
+      {% endif %} 
+
+{% comment %} {% if form.errors %}
+    <div class="alert alert-danger">
+        {{ form.errors }}
+    </div>
+{% endif %} {% endcomment %}
+        <input type="submit" name="submit">
     </form>
 </body>
 </html>

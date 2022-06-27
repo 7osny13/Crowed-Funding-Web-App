@@ -143,3 +143,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_DIR='/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = ( os.path.join(BASE_DIR, 'static'),)
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# mail settings 
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = 'stg1@localhost'
+EMAIL_HOST_PASSWORD = '123456789'
