@@ -81,7 +81,7 @@ def Registeration(request):
             userr.save()
             UserProfile.objects.create(user_id=User.objects.get(username=request.POST['username']).id,
             user_phone=request.POST['user_phone'], user_facebook=request.POST['user_facebook'],
-            user_country=request.POST['user_country'], user_birthday=request.POST['user_birthday'],user_type=request.POST['user_type'])
+            user_country=request.POST['user_country'], user_birthday=request.POST['user_birthday'])
             # uidb64= urlsafe_base64_encode(force_bytes(User.objects.get(username=request.POST['username']).id))
             # uidb64=urlsafe_base64_encode(force_bytes(userr.pk)) 
 
