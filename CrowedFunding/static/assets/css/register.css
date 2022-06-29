@@ -26,6 +26,7 @@
     
     .bg-indigo {
     background-color: #4835d4;
+    
     }
     @media (min-width: 992px) {
     .card-registration-2 .bg-indigo {
