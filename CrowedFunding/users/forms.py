@@ -21,7 +21,7 @@ class RegisterForm(forms.Form):
     password = forms.CharField(max_length=20,widget=forms.PasswordInput)
     password_confirmation = forms.CharField(max_length=20,widget=forms.PasswordInput)
     email=forms.EmailField(max_length=50)
-    # user_type = forms.ChoiceField(choices=[('owner', 'Owner'), ('doner', 'Doner')])
+    user_type = forms.ChoiceField(choices=[('owner', 'Owner'), ('doner', 'Doner')])
     user_phone=forms.IntegerField()
     user_facebook=forms.URLField(max_length=50)
     user_country=CountryField().formfield()
