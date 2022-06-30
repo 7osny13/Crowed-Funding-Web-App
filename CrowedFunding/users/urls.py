@@ -26,5 +26,7 @@ urlpatterns = [
     path('reg/',Registeration),
     path('login',LoginView.as_view(), name='login'),
     path('logino',logino),
+    path('profile',profile_view),
+    path('profileu',profile_edit,name='profileu'),
     path('activate/<uidb64>/<token>/',VerificationLink.as_view() ,name='activate'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,6 +5,7 @@ from email import message
 import email
 from multiprocessing import context
 from os import link
+import os
 import re
 from tracemalloc import stop
 from unittest.result import failfast
@@ -26,7 +27,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from .utils import token_generator
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 
 
@@ -50,7 +51,7 @@ from datetime import datetime, timedelta
     
 def logino(request):
    if(request.method=='GET'):
-    return render(request, 'login.html')
+    return render(request, 'accounts/login.html')
    
    else:
       print(request.POST['username'],' ',request.POST['password'])
@@ -62,12 +63,128 @@ def logino(request):
          login(request,user)
          request.session['username']=request.POST['username']
        
-         return HttpResponseRedirect( 'logino')
+         return HttpResponseRedirect( 'profile')
           
       else:
+         messages.error(request, 'Account Not Found')
+
+         return HttpResponseRedirect('logino')
+
+def profile_edit(request):
+    if(request.method=='POST'):
+        #update UserProfile
+        userm=User.objects.get(username=request.session['username'])
+        if userm:
+            userp=UserProfile.objects.filter(user_id=userm.id)
+            if request.POST['password']!=request.POST['confirm_password']:
+                
+                messages.error(request, 'Password Not Match')
+                return render( request, 'profile/editprofile.html')
+            if len(request.POST['password']) < 8:
+                messages.error(request, 'Password Too short ')
+                return render( request, 'profile/editprofile.html')
+            if len(str(request.POST['user_phone'])) < 12:
+                messages.error(request, 'Phone Number Too short ')
+                return render( request, 'profile/editprofile.html')
+            if len(str(request.POST['user_phone'])) > 13:
+                messages.error(request, 'Phone Number Too long ')
+                return render( request, 'profile/editprofile.html')
+            try:
+                phone = int(request.POST['user_phone'])
+            except ValueError:
+                messages.error(request, 'Phone Number is not a valid number')
+                return render( request, 'profile/editprofile.html')
+            user_birthday = request.POST['user_birthday']
+            date22=date(int(user_birthday[0:4]), int(user_birthday[5:7]), int(user_birthday[8:10]))
+            if date22 > date.today():
+                messages.error(request, 'Birthday is not valid')
+                return render( request, 'profile/editprofile.html')
+            if userp.count() > 0:
+                userp=userp[0]
+                userp.user_phone=request.POST['user_phone']
+                userp.user_birthday=request.POST['user_birthday']
+                userp.user_facebook=request.POST['user_facebook']
+                #update User password
+
+                userm.first_name=request.POST['first_name']
+                userm.last_name=request.POST['last_name']
+                userm.set_password(request.POST['password'])
+                if len(request.FILES)!=0:
+                    # print(str(userp.user_img))
+                    old='media/'+ str(userp.user_img)
+                    if os.path.exists(old):
+                        os.remove( old)
+                    userp.user_img=request.FILES['user_img']
+                else:
+                    if userp.user_img!='/img/default.png':
+                       userp.user_img=userp.user_img
+                
+
+                userp.save()
+                userm.save()
+
+                return HttpResponseRedirect('profile')
+            else:
+                return HttpResponseRedirect('profile')
+    else:
+       if ('ohaio' in request.session):
+
+            if ('username' in request.session):
+
+                if User.objects.filter(username=User.objects.get(username=request.session['username'])).count() > 0:
+                    context={}
+                    context['title']='profile'
+                    userm=User.objects.get(username=request.session['username'])
+                    context['user']=userm
+                    # filter UserProfile by userm.id
+                    
+                    userp=UserProfile.objects.filter(user_id=userm.id)
+                # filter UserProfile by user
+                    if userp.count() > 0:
+                        context['userp']=userp[0]
+                        # print(userp[0].user_birthday)
+                    del request.session['ohaio']
+                return render(request, 'profile/editprofile.html',context)
+    return redirect('login')
+
+def profile_view(request):
+    # try:
+    
+        if ('username' in request.session) :
+         if User.objects.filter(username=User.objects.get(username=request.session['username'])).count() > 0:
+            context={}
+            context['title']='profile'
+            userm=User.objects.get(username=request.session['username'])
+            context['user']=userm
+            # filter UserProfile by userm.id
+             
+            userp=UserProfile.objects.filter(user_id=userm.id)
+           # filter UserProfile by user
+            if userp.count() > 0:
+                context['userp']=userp[0]
+                # print(userp[0])
+            request.session['ohaio']=True
+          
+
+            return render(request,'profile/profile.html',context)
+
+         
+        # profile=UserProfile.objects.all()
+        # profile_main=UserProfile.objects.filter(user=request.user)
+        # # for Trainee in trainees:
+        # #     print(Trainee.id,Trainee.name,Trainee.phone,Trainee.address,Trainee.cource)
         
-         return HttpResponseRedirect('reg/')
-   
+        # # return HttpResponse('listo')
+        # context={}
+        # context['title']='trrainee'
+        # context['UserProfile']=UserProfile
+
+
+        # return render(request,'index.html',context)
+        else:
+         return HttpResponseRedirect('logino')
+    # except Exception as e:
+    #      return HttpResponseRedirect('logino')
 def Registeration(request):
     context={}
     ff=RegisterForm(request.POST or None)
@@ -79,9 +196,10 @@ def Registeration(request):
             userr=User.objects.create_user(username=request.POST['username'],password=request.POST['password'],
             email=request.POST['email'],first_name=request.POST['firstname'],last_name=request.POST['lastname'],is_active=False)
             userr.save()
+            
             UserProfile.objects.create(user_id=User.objects.get(username=request.POST['username']).id,
             user_phone=request.POST['user_phone'], user_facebook=request.POST['user_facebook'],
-            user_country=request.POST['user_country'], user_birthday=request.POST['user_birthday'],user_type=request.POST['user_type'])
+            user_country=request.POST['user_country'], user_birthday=request.POST['user_birthday'],user_img='img/default.png')
             # uidb64= urlsafe_base64_encode(force_bytes(User.objects.get(username=request.POST['username']).id))
             # uidb64=urlsafe_base64_encode(force_bytes(userr.pk)) 
 
@@ -107,7 +225,7 @@ def Registeration(request):
             send_mail('Fund Time Account Activation',activate_url,'stg1@localhost',[request.POST['email']],fail_silently=False)
             messages.success(request, 'Account created successfully \n Please Check your email to activate your account \n within 24 hours')
             # return render(request, 'register.html')
-            return render(request, 'login.html', {'form': ff})
+            return render(request, 'accounts/login.html', {'form': ff})
 
         
         # if not request.Post['user_phone'].startswith('20') and len(request.Post['user_phone'])<13 and len(request.Post['user_phone'])>10:
@@ -116,7 +234,7 @@ def Registeration(request):
     
         
         
-    return render(request, "register.html", context)
+    return render(request, "accounts/register.html", context)
     # return render(request,'register.html',{'form':ff})
         
 class VerificationLink(View):
@@ -162,7 +280,7 @@ class VerificationLink(View):
         return redirect('login')
 class LoginView(View):
     def get(self, request):
-        return render(request, 'login.html')
+        return render(request, 'accounts/login.html')
 
 
         
