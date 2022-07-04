@@ -16,33 +16,34 @@
   </head>
   <body>
     <nav class="navbar">
-      <div class="navbar-container container">
-        <input type="checkbox" name="" id="" />
-        <div class="hamburger-lines">
-          <span class="line line1"></span>
-          <span class="line line2"></span>
-          <span class="line line3"></span>
+        <div class="navbar-container container">
+          <input type="checkbox" name="" id="" />
+          <div class="hamburger-lines">
+            <span class="line line1"></span>
+            <span class="line line2"></span>
+            <span class="line line3"></span>
+          </div>
+          <ul class="menu-items">
+            <li><a href="/CrowedFunding/templates/projects/project.html">Projects</a></li>
+            <li>
+              <form class="d-flex">
+                <input
+                  class="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button class="btn btn-outline-primary" type="submit">
+                  Search
+                </button>
+              </form>
+            </li>
+            <li><img class="rounded-circle" width="40" height="40" src="/CrowedFunding/static/img/project.webp" alt=""></li>
+            <li></li>
+          </ul>
+          <h1 class="logo">FundTime</h1>
         </div>
-        <ul class="menu-items">
-          <li>
-            <form class="d-flex">
-              <input
-                class="form-control me-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-              />
-              <button class="btn btn-outline-primary" type="submit">
-                Search
-              </button>
-            </form>
-          </li>
-          <li><button class="btn btn-primary" type="button">Signin</button></li>
-          <li><button class="btn btn-primary" type="button">Signup</button></li>
-        </ul>
-        <h1 class="logo">FundTime</h1>
-      </div>
-    </nav>
+      </nav>
     <div class="container mt-5 mb-5">
       <div class="card">
         <div class="row g-0">
@@ -85,14 +86,6 @@
                       width="70"
                     />
                   </li>
-                  <li>
-                    <img
-                      onclick="changeImage(this)"
-                      src="/CrowedFunding/static/img/project.webp"
-                      width="70"
-                    />
-                  </li>
-                 
                 </ul>
               </div>
             </div>
