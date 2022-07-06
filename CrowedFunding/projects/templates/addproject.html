@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <title>Add Project</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4.3.2/css/metro-all.min.css">
+
+    <style>
+      .success {
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 0
+        list-style: none;
+        background-color: #90EE90;
+      }
+      .error {
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 0
+        list-style: none;
+        background-color: #ff726f;
+      }
+      .info {
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 0
+        list-style: none;
+        background-color: #52aeff;
+      }
+</style>  
+
+</head>
+<body>
+  <script src="https://cdn.metroui.org.ua/v4.3.2/js/metro.min.js"></script>
+
+ 
+    <nav class="navbar">
+        <div class="navbar-container container">
+          <input type="checkbox" name="" id="" />
+          <div class="hamburger-lines">
+            <span class="line line1"></span>
+            <span class="line line2"></span>
+            <span class="line line3"></span>
+          </div>
+          <ul class="menu-items">
+            <li><a href="/CrowedFunding/templates/projects/project.html">Projects</a></li>
+            <li>
+              <form class="d-flex">
+                <input
+                  class="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button class="btn btn-outline-primary" type="submit">
+                  Search
+                </button>
+              </form>
+            </li>
+            <li><img class="rounded-circle" width="40" height="40" src="{% static '/img/project.webp' %}" alt=""></li>
+            <li>
+              {% if request.user.is_authenticated%}
+
+              <a href="logout"><button class="btn btn-danger" type="button" >SignOut</button></a>
+              {% else %} 
+       
+              {{ user.username }}
+                {% endif %}
+            </li>
+          </ul>
+          <h1 class="logo">FundTime</h1>
+        </div>
+      </nav>
+    <header class="jumbotron">
+        <h1 class="text-center display-3" id="title"> Add Project </h1>
+       
+
+    </header>
+
+    <div class="container">
+        <form id="survey-form" action="" method="post" enctype="multipart/form-data" >
+          {% csrf_token %}
+          {% if messages %}
+          <ul class="messages">
+              {% for message in messages %}
+              <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+              {% endfor %}
+          </ul>
+          {% endif %}
+            
+            <div class="form-group ">
+                <label for="">Project Title</label>
+                <input class="form-control" type="text" id="name" name="project_name" required>
+            </div>
+            
+            <div class="form-group ">
+                <label for="">Start Date</label>
+                <input class="form-control" type="datetime-local" id="lastName" name="project_started_at" required>
+            </div>
+                    
+            <div class="form-group">
+                <label for="">End Date</label>
+                <input class="form-control" type="datetime-local" id="lastName" name="project_ended_at" >
+            </div>
+            <div class="form-group ">
+                <label for="">Total Target</label>
+                <input class="form-control" type="number" id="name" name="project_goal" required>
+            </div>
+						
+            <div class="form-group">
+                <label for="gender">Category</label>
+                <select class="form-control" id="category" name="project_cat_related">
+                    <option>-------</option>
+                    <option value=1>cat1</option>
+                    <option value=2>cat2</option>
+                    <option value=3>cat3</option>
+                    <option value=4>cat4</option>
+                    <option value=5>cat5</option>
+                    <option value=6>cat6</option>
+                    <option value=7>cat7</option>
+                </select>
+            </div>
+
+          <div class="mb-3">
+                <label class="form-label">Choose Photos Collection</label><br />
+                <input class="form-control" type="file" name="project_images" id="project_images"  multiple required>
+            </div> 
+            <div class="mb-3">
+              <label class="form-label">Choose thumbnail</label><br />
+              <input type="file" name="project_image_thumb" class="form-control" id="projectimagethumb"  accept=".png, .jpg, .jpeg" >
+
+              {% comment %} <input class="form-control" type="file" name="project_image_thumb" id="project_image_thumb"  required> {% endcomment %}
+          </div>
+
+            <!-- BIRTHDATE -->
+            <div class="form-group">
+                <label for="">Descrription</label>
+                <!-- <input class="form-control" type="" id="lastName" placeholder="Start Date"> -->
+                <textarea class="w-100" rows="4" cols="" name="project_description">
+	          	  
+	            </textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="">Tags</label>
+              <!-- <input class="form-control" type="" id="lastName" placeholder="Start Date"> -->
+              <input type="text" data-role="taginput" data-random-color="true" tagSeparator="," name="tagoo" required>
+              
+            </textarea>
+          </div>
+            <input class="btn btn-primary btn-lg btn-block" type="submit" id="submit" name="submit" value="Add Project">
+           
+        </form>
+        <footer class="text-center py-4 mt-5">
+            <div class="container">
+              <div class="row row-cols-1 row-cols-lg-3">
+                <div class="col">
+                  <p class="text-muted my-2">Copyright&nbsp;© 2022 FundTime</p>
+                </div>
+                <div class="col">
+                  <ul class="list-inline my-2">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                  </ul>
+                </div>
+                <div class="col">
+                  <ul class="list-inline my-2">
+                    <li class="list-inline-item">
+                      <a class="link-secondary" href="#">Privacy Policy</a>
+                    </li>
+                    <li class="list-inline-item">
+                      <a class="link-secondary" href="#">Terms of Use</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </div>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+</body>
+</html>

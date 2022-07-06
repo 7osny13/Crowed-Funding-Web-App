@@ -54,21 +54,23 @@ def logino(request):
     return render(request, 'accounts/login.html')
    
    else:
-      print(request.POST['username'],' ',request.POST['password'])
-
+ 
       user=authenticate(request,username=request.POST['username'],password=request.POST['password'],is_active=True)
-      print(user)
-       
+        
       if user :
          login(request,user)
          request.session['username']=request.POST['username']
        
-         return HttpResponseRedirect( 'profile')
+        #  return render( request, 'accounts/main.html' )
+         return HttpResponseRedirect('/projects/projects_all')
+
           
       else:
          messages.error(request, 'Account Not Found')
 
-         return HttpResponseRedirect('logino')
+        #  return HttpResponseRedirect('logino')
+         return HttpResponseRedirect('addo')
+
 
 def profile_edit(request):
     if(request.method=='POST'):
@@ -280,7 +282,7 @@ class VerificationLink(View):
         return redirect('login')
 class LoginView(View):
     def get(self, request):
-        return render(request, 'accounts/login.html')
+        return HttpResponseRedirect( 'logino')
 
 
         
