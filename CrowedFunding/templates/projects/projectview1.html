@@ -44,7 +44,7 @@
           <h1 class="logo">FundTime</h1>
         </div>
       </nav>
-    <div class="container mt-5 mb-5">
+    <div class="container mt-5 mb-5" >
       <div class="card border-0">
         <div class="row g-0">
             <div id="carouselExampleInterval" class="carousel slide w-50 " data-bs-ride="carousel" style="margin-top: 5rem;">
@@ -103,19 +103,63 @@
                 <button class="btn mt-3 p-2 w-100 text-primary" role="button">Rate Project</button>
               </div>
               <div class="buttons d-flex flex-row mt-5 gap-3">
-                <button class="btn btn-outline-primary w-100">Donate</button>
+                <button class="btn btn-outline-primary w-100" onclick="on()">Donate</button>
                 
               </div>
+              <div id="overlay" >
+                <div class="container mt-5 d-flex justify-content-center" id="text">
+
+                    <div class="card p-3">
+        
+                        <div class="d-flex align-items-center">
+        
+                            <div class="image">
+                                 <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80" class="rounded" width="155" >
+                             </div>
+                            
+        
+                        <div class="ml-3 w-100">
+                          <h4 class="mx-5 text-primary" style="color: black;">Ahmed Mahmoud</h4>
+                          <h6 class="mx-2 mt-5" style="color:black;">Donation Amount:</h6>
+                          <div class="form-outline mx-3">
+                            <input type="number" id="typeNumber" class="form-control w-75" />
+                            <label class="form-label" for="typeNumber">Number input</label>
+                          </div>
+                           
+                           <div class="button  mt-2 d-flex flex-row align-items-center">
+                                
+                            <button class="btn btn-sm btn-primary w-75">Donate</button>
+                            <button class="btn btn-sm btn-danger w-75 ml-2" onclick="off()">Cancel</button>
+        
+                               
+                           </div>
+        
+        
+                        </div>
+                       
+        
+                            
+                        </div>
+                        
+                    </div>
+                     
+                 </div>
+              </div>
+              
               
 
-              <div class="feedback d-flex flex-column align-items-center">
+              </div>
 
-                
-              <button class="btn btn-transparent shadow-none text-center mt-4 p-0" ><i
+              <div class="feedback d-flex flex-column align-items-center">
+              
+
+              <button class="btn btn-transparent shadow-none text-center mt-4 p-0"  ><i
                 class="fa-solid fa-flag"></i><small class="mx-2">Report this project</small>
               </button>
               
             </div>
+            
+              
           </div>
         </div>
       </div>
@@ -331,6 +375,8 @@
     ></script>
     <script src="/CrowedFunding/static/assets/js/projectview.js">
 
+
     </script>
+    <script src="/CrowedFunding/static/assets/js/projectview.js"></script>
   </body>
 </html>
