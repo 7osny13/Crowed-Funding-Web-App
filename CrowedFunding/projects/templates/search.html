@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>project</title>
+    <link
+      rel="stylesheet"
+      href="/CrowedFunding/static/assets/css/projectpage.css"
+    />
+    <link rel="stylesheet" href="{% static '/assets/css/style.css' %}" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <style>
+      .cardohover:hover {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+             
+       }
+       .success {
+              font-size: 12px;
+              font-weight: bold;
+              margin-top: 0
+              list-style: none;
+              background-color: #90EE90;
+            }
+            .error {
+              font-size: 12px;
+              font-weight: bold;
+              margin-top: 0
+              list-style: none;
+              background-color: #ff726f;
+            }
+            .info {
+              font-size: 12px;
+              font-weight: bold;
+              margin-top: 0
+              list-style: none;
+              background-color: #52aeff;
+            }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar  me-auto mb-2 mb-lg-0">
+        <div class="navbar-container container">
+          <input type="checkbox" name="" id="" />
+          <div class="hamburger-lines">
+            <span class="line line1"></span>
+            <span class="line line2"></span>
+            <span class="line line3"></span>
+          </div>
+          <ul class="menu-items ">
+            {% if 'username' in request.session  %}
+            <li class="nav-item">
+              <a class="nav-link active me-5" aria-current="page" href="/projects/projects_all">Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active me-5" aria-current="page" href="/projects/addo">Create Project</a>
+            </li>
+              {% endif %}
+            <li>
+              <form action="/projects/search" method="Post" enctype="multipart/form-data" class="d-flex">
+                {%csrf_token%}
+                <input
+                  class="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                  name="search"
+                />
+                <button class="btn btn-outline-primary" type="submit">
+                  Search
+                </button>
+              </form>
+            </li>
+            {% if 'username' in request.session  %}
+  <a href="/projects/logout"><button class="btn btn-danger ms-2" type="button" >SignOut</button></a> 
+            <a href="/users/profile" class=" ms-3 p-0"> {{ user.username }}</a> 
+           
+              
+            {% else %} 
+            <li><a href="/users/login"> <button class="btn btn-primary" type="button">Signin</button></a></li>
+            <li><a href="/users/reg"> <button class="btn btn-primary" type="button">Signup</button></a></li>
+         
+              
+  
+           
+            {% endif %}
+          </ul>
+          <h1 class="logo">FundTime</h1>
+        </div>
+      </nav>
+    <section class="section-products">
+      <div class="container">
+        <div class="row justify-content-center text-center">
+          <div class="col-md-8 col-lg-6">
+            <div class="header">
+              <h2>Projects</h2>
+              {% if messages %}
+              <ul class="messages">
+                  {% for message in messages %}
+                  <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+                
+            </div>
+          </div>
+        </div>
+        <div class="row">
+        
+
+                        {% for project in projects %}
+                        <div class="col-4">
+                        <div class="card m-5 cardohover" style="width: 18rem;" >
+                          <img src="{{project.image_thumb | safe}}" class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <h5 class="card-title">{{project.name}}</h5>
+                            <p class="card-text">{{project.description}}</p>
+                            <h5 class="card-title"></h5>
+                            <h4 class="product-price text-success">{{project.goal}}</h4>
+
+                            <a href="/projects/project_detail/{{project.id }}" class="btn btn-primary">View Project</a>
+                          </div>
+                        </div>
+                      </div>
+                        {% endfor %}
+
+
+                        {% for project in projecttag %}
+                        <div class="col-4">
+                        <div class="card m-5 cardohover" style="width: 18rem;" >
+                          <img src="{{project.image_thumb | safe}}" class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <h5 class="card-title">{{project.name}}</h5>
+                            <p class="card-text">{{project.description}}</p>
+                            <h5 class="card-title"></h5>
+                            <h4 class="product-price text-success">{{project.goal}}</h4>
+
+                            <a href="/projects/project_detail/{{project.id }}" class="btn btn-primary">View Project</a>
+                          </div>
+                        </div>
+                      </div>
+                        {% endfor %}
+          
+        </div>
+      </div>
+    </section>
+   
+    <footer class="text-center py-4">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-lg-3">
+          <div class="col">
+            <p class="text-muted my-2">Copyright&nbsp;© 2022 FundTime</p>
+          </div>
+          <div class="col">
+            <ul class="list-inline my-2">
+              <i class="fa-brands fa-facebook"></i>
+              <i class="fa-brands fa-twitter"></i>
+              <i class="fa-brands fa-instagram"></i>
+            </ul>
+          </div>
+          <div class="col">
+            <ul class="list-inline my-2">
+              <li class="list-inline-item">
+                <a class="link-secondary" href="#">Privacy Policy</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="link-secondary" href="#">Terms of Use</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://kit.fontawesome.com/656b05a79d.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

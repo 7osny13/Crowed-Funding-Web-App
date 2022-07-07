@@ -1,0 +1,260 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4.3.2/css/metro-all.min.css">
+
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+    crossorigin="anonymous"
+  />
+  </head>
+<body>
+        <!-- Image and text -->
+        <nav class="navbar  me-auto mb-2 mb-lg-0">
+          <div class="navbar-container container">
+            <input type="checkbox" name="" id="" />
+            <div class="hamburger-lines">
+              <span class="line line1"></span>
+              <span class="line line2"></span>
+              <span class="line line3"></span>
+            </div>
+            <ul class="menu-items ">
+              {% if 'username' in request.session  %}
+              <li class="nav-item">
+                <a class="nav-link active me-5" aria-current="page" href="/projects/projects_all">Projects</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active me-5" aria-current="page" href="/projects/addo">Create Project</a>
+              </li>
+                {% endif %}
+              <li>
+                <form action="/projects/search" method="Post" enctype="multipart/form-data" class="d-flex">
+                  {%csrf_token%}
+                  <input
+                    class="form-control me-2"
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                    name="search"
+                  />
+                  <button class="btn btn-outline-primary" type="submit">
+                    Search
+                  </button>
+                </form>
+              </li>
+              {% if 'username' in request.session  %}
+    <a href="/projects/logout"><button class="btn btn-danger ms-2" type="button" >SignOut</button></a> 
+              <a href="/users/profile" class=" ms-3 p-0"> {{ user.username }}</a> 
+             
+                
+              {% else %} 
+        <li><button class="btn btn-primary" type="button">Signin</button></li>
+              <li><button class="btn btn-primary" type="button">Signup</button></li>
+           
+                
+    
+             
+              {% endif %}
+            </ul>
+            <h1 class="logo">FundTime</h1>
+          </div>
+        </nav>
+    <section style="background-color: #eee;">
+        <div class="container py-5 ">
+          
+      
+          <div class="row mt-3">
+            <div class="col-lg-4">
+              <div class="card mb-4">
+                <div class="card-body text-center">
+                  <img src="{{userp.user_img | safe}}" alt="avatar"
+                    class="rounded-circle img-fluid" style="width: 150px;">
+                    
+                  <h5 class="my-3">{{request.session.username}}</h5>
+                  
+                  <div class="d-flex justify-content-center mb-2">
+                    <a href="{% url 'profileu' %}"><button type="button" class="btn btn-outline-primary "><i class="fa-solid fa-pen-to-square me-1"></i>Edit Profile</button></a>
+                  </div>
+                  <div class="d-flex justify-content-center mb-2">
+                    <button type="button" class="btn btn-outline-primary "><i class="fa-solid fa-circle-plus me-1"></i>Create Project</button>
+                  </div>
+                  
+
+                  
+                </div>
+              </div>
+              <div class="card mb-4 mb-lg-0">
+                <!-- <div class="card-body p-0"> -->
+                  <ul class="list-group list-group-flush rounded-3">
+                    <li class="list-group-item d-flex justify-content-evenly align-items-center p-3">
+                        <h5><i class="fa fa-coins text-primary"></i></h5>
+                        <h5 class="mx-3">{{donsum}}<span
+                            class="text-light text-dark mx-1">Donation</span></h5>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-evenly align-items-center p-3">
+                        <h5><i class="fa fa-chart-pie text-primary"></i></i></h5>
+                        <h5 class="mx-3">{{prosum}}<span
+                            class="text-light text-dark mx-1">Project</span></h5>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-evenly align-items-center p-3">
+                      <h5><i class="fa-solid fa-sack-dollar text-primary"></i></i></h5>
+                      <h5 class="mx-3">{{userp.user_balance}}<span
+                          class="text-light text-dark mx-1"> L.E</span></h5>
+                  </li>
+                    
+                  
+                  </ul>
+                <!-- </div> -->
+              </div>
+            </div>
+            <div class="col-lg-8">
+                <h3 class="text-dark text-center ">Information</h3>
+              <div class="card mb-4">
+                
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">User Name</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">{{user.username}}</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">First Name</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">{{user.first_name}}</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Last Name</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">{{user.last_name}}</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Password</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">***************</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Mobile</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">{{userp.user_phone}}</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Country</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">{{userp.user_country}}</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Facebook Account</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">{{userp.user_facebook}}</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Birthdate</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0">{{userp.user_birthday}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h3 class="text-dark text-center ">Donations</h3>
+              <div class="card">
+              <table class="table  ">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Donation</th>
+                    <th scope="col">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                   {% for donation in donations %}
+                   <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{donation.title}}</td>
+                    <td>{{donation.donation}} L.E</td>
+                    <td>{{donation.date}}</td>
+                    {% endfor %}
+                   
+                </tbody>
+              </table>
+            </div>
+            <h3 class="text-dark text-center mt-2 ">Projects</h3>
+
+           
+            
+            <div class="row">
+              {% for project in projects %}
+              <div class="col-4">
+                <div class="card " style="width: 18rem;">
+                    <img src="{{project.image_thumb | safe}}" class="card-img-top" alt="Sunset Over the Sea"/>
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title ms-3 mt-1 mb-0">{{project.title}}</h5>
+                        <h6 class="me-3 mt-2 text-primary">{{project.goal}} L.E</h6>
+                    </div>
+                    <div class="card-body">
+                      <p class="card-text">{{project.description}}</p>
+                      <a href="/projects/project_detail/{{project.id }}" class="btn btn-primary">More</a>
+                    </div>
+                  </div>
+                  </div>
+                    {% endfor %}
+                  
+                </div>
+            </div>
+            
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer class="bg-light text-center text-lg-start">
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+          © 2020 Copyright:
+          <a class="text-dark text-decoration-none" href="">FundTime</a>
+        </div>
+        <!-- Copyright -->
+      </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>  
+    <script src="https://kit.fontawesome.com/656b05a79d.js" crossorigin="anonymous"></script>
+</body>
+</html>

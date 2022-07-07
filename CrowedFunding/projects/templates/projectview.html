@@ -1,0 +1,441 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project</title>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/projectview.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      .success {
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 0
+        list-style: none;
+        background-color: #90EE90;
+      }
+      .error {
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 0
+        list-style: none;
+        background-color: #ff726f;
+      }
+      .info {
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 0
+        list-style: none;
+        background-color: #52aeff;
+      }
+      #overlay {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 2;
+        cursor: pointer;
+      }
+</style>  
+  </head>
+  <body>
+    <nav class="navbar  me-auto mb-2 mb-lg-0">
+      <div class="navbar-container container">
+        <input type="checkbox" name="" id="" />
+        <div class="hamburger-lines">
+          <span class="line line1"></span>
+          <span class="line line2"></span>
+          <span class="line line3"></span>
+        </div>
+        <ul class="menu-items ">
+          {% if 'username' in request.session  %}
+          <li class="nav-item">
+            <a class="nav-link active me-5" aria-current="page" href="/projects/projects_all">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active me-5" aria-current="page" href="/projects/addo">Create Project</a>
+          </li>
+            {% endif %}
+          <li>
+            <form action="/projects/search" method="Post" enctype="multipart/form-data" class="d-flex">
+              {%csrf_token%}
+              <input
+                class="form-control me-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+                name="search"
+              />
+              <button class="btn btn-outline-primary" type="submit">
+                Search
+              </button>
+            </form>
+          </li>
+          {% if 'username' in request.session  %}
+<a href="/projects/logout"><button class="btn btn-danger ms-2" type="button" >SignOut</button></a> 
+          <a href="/users/profile" class=" ms-3 p-0"> {{ user.username }}</a> 
+         
+            
+          {% else %} 
+          <li><a href="/users/login"> <button class="btn btn-primary" type="button">Signin</button></a></li>
+          <li><a href="/users/reg"> <button class="btn btn-primary" type="button">Signup</button></a></li>
+       
+            
+
+         
+          {% endif %}
+        </ul>
+        <h1 class="logo">FundTime</h1>
+      </div>
+    </nav>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <div class="alert {{ message.tags }}  text-center " {% if message.tags %} {% endif %}>{{ message }}</div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="container mt-5 mb-5">
+      <div class="card">
+        <div class="row g-0">
+          <div class="container mt-5 mb-5 ">
+            <div class="card border-0">
+              <div class="row g-0">
+                
+                <div id="carouselExampleInterval" class="carousel slide w-50 " data-bs-ride="carousel" style="margin-top: 5rem;">
+                  <div class="carousel-inner">
+
+                    {% for image in projectimages %}
+                    <div class="carousel-item active" data-bs-interval="10000">
+                      <img src="/projects/{{image.image | safe}}" class="d-block img-fluid" alt="...">
+                    </div>
+                    {% endfor %}
+                    
+                  </div>
+                  <button class="carousel-control-prev " type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev" >
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+            
+          <div class="col-md-6">
+            <div class="p-3 right-side">
+              <div class="d-flex justify-content-between align-items-center">
+                <h3>{{project.name}}</h3>
+               
+              </div>
+              <div class="mt-3 pr-3 content">
+                <p>
+                  {{project.user}}
+                </p>
+              </div>
+              <div class="mt-3 pr-3 content">
+                <h3 class="mt-5">GOAL  :{{project.goal}}L.E</h3>
+                <p>
+                  total funded:  {{projectdonation}}
+                 </p>
+              <div class="d-flex flex-column align-items-center">
+                <span>{{projectdonation}}</span>
+
+                <span>Donations</span>
+              </div>
+              <form action="/projects/rating/{{ project.id }}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+              
+              <div class="rate ">
+
+                <input type="radio" id="star5" name="rate" value="5" onclick="star()" {% if project.rating == 5 %} checked {% endif %}/>
+                <label for="star5" title="text">5 stars</label>
+                <input type="radio" id="star4" name="rate" value="4" onclick="star()" {% if project.rating == 4 %} checked {% endif %}  />
+                <label for="star4" title="text">4 stars</label>
+                <input type="radio" id="star3" name="rate" value="3" onclick="star()" {% if project.rating == 3 %} checked {% endif %}/>
+                <label for="star3" title="text">3 stars</label>
+                <input type="radio" id="star2" name="rate" value="2" onclick="star()" {% if project.rating == 2 %} checked {% endif %}/>
+                <label for="star2" title="text">2 stars</label>
+                <input type="radio" id="star1" name="rate" value="1" onclick="star()" {% if project.rating == 1 %} checked {% endif %}/>
+                <label for="star1" title="text">1 star</label>
+                <input id="divCheckbox" type="hidden" name="divcheckbox" value="val" /></input>
+                <input id="divCheckbox2" type="hidden" name="prid" value={{project.id}}></input>
+                <input id="divCheckbox3" type="hidden" name="userid" value={{user.id}}></input>
+                
+                
+              </div>
+              <input class="btn btn-primary btn-lg btn-block" type="submit" id="submit" name="submit" value="Rate">
+            </form>
+
+
+
+
+            
+          {% if project_status == 'danger'%}
+            <form action="/projects/prodel/{{ project.id }}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');">Cancel Project</button>
+            </form>
+            {%endif%}
+              <div class="text-center">
+              </div>
+             {% if project.user == user.id%} 
+              <div class="buttons d-flex flex-row mt-5 gap-3">
+                <button class="btn btn-outline-primary w-100" onclick="on()">Donate</button>
+             {% endif %} 
+              <div id="overlay" >
+
+
+                <div class="container mt-5 d-flex justify-content-center" id="text">
+
+                    <div class="card p-3">
+        
+                        <div class="d-flex align-items-center">
+        
+                          {% for imgg in commentuserimage %}
+                        
+                            <div class="image">
+                                 <img src="/users/{{imgg.user_img | safe}}" class="rounded" width="155" >
+                             </div>
+                             {% endfor %}
+        
+                        <div class="ml-3 w-100">
+                          <h4 class="mx-5 text-primary" style="color: black;">{{user.username}}</h4>
+                          <h6 class="mx-2 mt-5" style="color:black;">Donation Amount:</h6>
+                          <form action="/projects/prodon/{{ project.id }}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input id="divCheckbox3c" type="hidden" name="userid" value={{user.id}}></input>
+
+                          <div class="form-outline mx-3">
+                            <input type="number" id="typeNumber" name="amount" class="form-control w-75" />
+                            <label class="form-label" for="typeNumber">Number input</label>
+                          </div>
+                           
+                           <div class="button  mt-2 d-flex flex-row align-items-center">
+                                
+                            <button type="submit" class="btn btn-sm btn-primary w-75">Confirm</button>
+                            </form>
+                            <button class="btn btn-sm btn-danger w-75 ml-2" onclick="off()">Cancel</button>
+        
+                               
+                           </div>
+        
+        
+                        </div>
+                       
+        
+                            
+                        </div>
+                        
+                    </div>
+                     
+                 </div>
+                </div>
+
+              <div class="feedback d-flex flex-column align-items-center">
+
+                
+                <form  action="/projects/prorpt/{{project.id}}" method="post" enctype="multipart/form">
+                  {% csrf_token %}
+                  <input id="divCheckbox2" type="hidden" name="commentid" value={{com.id}}></input>
+                  <input id="divCheckbox3" type="hidden" name="userid" value={{user.id}}></input>
+                  <input id="divCheckbox4" type="hidden" name="prid" value={{project.id}}></input>
+                <button type="submit"  class="btn btn-transparent shadow-none text-center mx-4 p-0 " ><i class="fa-solid fa-flag"></i> Report this project</button>
+                </form>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class=" w-75 mt-5">
+      <div class="">
+        <h5 class="card-title">Description</h5>
+        <p class="card-text mt-4">{{project.description}}</p>
+        
+      </div>
+     
+        <h6 class="mt-3 mb-0">Rating: </h6>
+        <div class="rate " disabled>
+
+          <input  type="radio" id="star5" name="rate5" disabled  value="5" {% if projectavgrating == 5 %} checked {% endif %}/>
+          <label for="star5" title="text" disabled>5 stars</label>
+          <input type="radio" id="star4" name="rate4" disabled value="4" {% if project.rating == 4 %} checked {% endif %} />
+          <label for="star4" title="text" disabled>4 stars</label>
+          <input type="radio" id="star3" name="rate3" disabled value="3" {% if projectavgrating == 3 %} disabled checked {% endif %}/>
+          <label for="star3" title="text" disabled>3 stars</label>
+          <input type="radio" id="star2" name="rate2" disabled value="2" {% if projectavgrating == 2 %} checked {% endif %}/>
+          <label for="star2" title="text" disabled>2 stars</label>
+          <input type="radio" id="star1" name="rate1" disabled value="1" {% if projectavgrating == 1 %} checked {% endif %}/>
+          <label for="star1" title="text" disabled>1 star</label>
+        </div>
+    
+    </div>
+
+    <div class="mt-5 pt-4">
+      <h5 class="card-title">Related Project ({{cat_related}})</h5>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mt-4">
+      {% for project in allprojects %}
+      {% if project in relatedprojects %}
+
+      <div class="col">
+        <a href="/projects/project_detail/{{project.id }}" class="text-decoration-none text-dark">
+        <div class="card h-100">
+          <img src="/projects/{{project.image_thumb | safe}}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title text-center">{{project.name}}</h5>
+          </div>
+        </div>
+      </a>
+      </div>
+      {% endif %}
+      {% endfor %}
+         
+
+
+       
+       
+      
+    </div>
+    <div class="mt-5">
+      <h5 class="card-title">Comments :</h5>
+    </div>
+    <div class="row mt-4">
+      {% for com in comments%}
+      <div class="col-1 mx-2">
+        {% for imgg in commentuserimage %}
+          <img src="/users/{{imgg.user_img | safe}}" alt="" class="rounded-circle" width="50" height="50">
+        {% endfor %}
+      </div>
+      <div class="col-6">
+          <div class="d-flex">
+            <h6>{{com.user}}</h6>
+            <form  action="/projects/comrpt/{{project.id}}" method="post" enctype="multipart/form">
+              {% csrf_token %}
+              <input id="divCheckbox2" type="hidden" name="commentid" value={{com.id}}></input>
+              <input id="divCheckbox3" type="hidden" name="userid" value={{user.id}}></input>
+              <input id="divCheckbox4" type="hidden" name="prid" value={{project.id}}></input>
+            <button type="submit"  class="btn btn-transparent shadow-none text-center mx-4 p-0 " ><i class="fa-solid fa-flag"></i> Report</button>
+            </form>
+          </div>
+
+          <div class="mt-3">
+            <p>{{com.comment}}</p>
+          </div>
+          <div class="mt-4"> 
+            <hr>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row mt-3"> 
+        <div>
+          <form action="/projects/comments/{{ project.id }}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+              
+            <div>
+            <textarea name="comment" id="" cols="75" rows="4"></textarea>
+           </div>
+           <div class="mt-2 ">
+            <input id="divCheckbox2" type="hidden" name="prid" value={{project.id}}></input>
+            <input id="divCheckbox3" type="hidden" name="userid" value={{user.id}}></input>
+            <input type="submit" value="Comment" class="btn btn-primary ">
+          </div>
+          </form>
+        </div>
+    </div>
+    <footer class="text-center py-4">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-lg-3">
+          <div class="col">
+            <p class="text-muted my-2">Copyright&nbsp;© 2022 FundTime</p>
+          </div>
+          <div class="col">
+            <ul class="list-inline my-2">
+              <i class="fa-brands fa-facebook"></i>
+              <i class="fa-brands fa-twitter"></i>
+              <i class="fa-brands fa-instagram"></i>
+            </ul>
+          </div>
+          <div class="col">
+            <ul class="list-inline my-2">
+              <li class="list-inline-item">
+                <a class="link-secondary" href="#">Privacy Policy</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="link-secondary" href="#">Terms of Use</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://kit.fontawesome.com/656b05a79d.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/CrowedFunding/static/assets/js/projectview.js">
+
+    </script>
+    <script>
+    //  $("#star") // select the radio by its id
+   // .change(function(){ // bind a function to the change event
+    //    if( $(this).is(":checked") ){ // check if the radio is checked
+   //         var val = $(this).val(); // retrieve the value
+   //         console.log(val); // log the value
+   //     }
+   // });
+   document.getElementById("star3").disabled = true;
+      function star(){
+       var type = document.getElementsByName("rate");
+ 
+       for(var i = 0; i < type.length; i++)
+       {
+           if(type[i].checked){
+           var val=type[i].value;
+
+               document.getElementById('divCheckbox').value= val;
+         //alert(document.getElementById('divCheckbox').innerHTML)
+
+           }
+           
+        
+       }
+      }
+            
+      function on() {
+        document.getElementById("overlay").style.display = "block";
+      }
+      
+      function off() {
+        document.getElementById("overlay").style.display = "none";
+      }
+        
+    </script>
+  </body>
+</html>
